@@ -1,8 +1,13 @@
-﻿namespace RedRiverCoffeeMachine.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RedRiverCoffeeMachine.Data.Models
 {
     public class RecipeStep
     {
         public int Id { get; set; }
-        public string Step { get; set; }
+
+        [Required]
+        [MaxLength(100)]
+        public string StepName { get; set; }
     }
 }
