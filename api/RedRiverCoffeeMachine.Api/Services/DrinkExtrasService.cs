@@ -20,7 +20,7 @@ namespace RedRiverCoffeeMachine.Api.Services
 
         public async Task<bool> AddDrinkExtraAsync(AddExtrasRequest request)
         {
-            var drinkExtra = new DrinkExtra
+            var drinkExtra = new Extra
             {
                 Name = request.Name,
             };
@@ -36,7 +36,8 @@ namespace RedRiverCoffeeMachine.Api.Services
 
             foreach(var drink in drinks)
             {
-                drink.PossibleExtras.Add(drinkExtra);
+                //TODO rethink the way extras are updated
+                //drink.DrinkExtras.Add(drinkExtra);
             }
 
             return await _drinksRepository.UpdateDrinksAsync(drinks);

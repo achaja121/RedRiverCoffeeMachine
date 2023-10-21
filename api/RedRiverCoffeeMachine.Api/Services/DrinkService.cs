@@ -38,7 +38,7 @@ namespace RedRiverCoffeeMachine.Api.Services
                 Id= drink.Id,
                 Name = drink.Name,
                 Type= drink.Type,
-                PossibleExtras = drink.PossibleExtras,
+                //PossibleExtras = drink.PossibleExtras,
             };
         }
     }

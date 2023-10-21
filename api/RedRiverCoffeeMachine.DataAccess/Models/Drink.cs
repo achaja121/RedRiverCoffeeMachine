@@ -1,4 +1,5 @@
 ﻿using RedRiverCoffeeMachine.Data.Enums;
+using RedRiverCoffeeMachine.DataAccess.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace RedRiverCoffeeMachine.Data.Models
@@ -12,9 +13,9 @@ namespace RedRiverCoffeeMachine.Data.Models
         public string Name { get; set; }
         public DrinkTypes Type { get; set; }
 
-        public List<DrinkExtra> PossibleExtras { get; set; } = new List<DrinkExtra>();
-
         [MaxLength(20)]
         public string RecipeStepsOrder { get; set; }
+
+        public ICollection<DrinkExtra> DrinkExtras { get; set; } 
     }
 }
