@@ -5,7 +5,7 @@ namespace RedRiverCoffeeMachine.DataAccess.Repositories
 {
     public class DrinkExtrasRepository : IDrinkExtrasRepository
     {
-        public Task<DrinkExtra> AddDrinkExtraAsync(DrinkExtra drinkExtra)
+        public Task<Extra> AddDrinkExtraAsync(Extra drinkExtra)
         {
             throw new NotImplementedException();
         }
