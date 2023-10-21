@@ -5,7 +5,7 @@ namespace RedRiverCoffeeMachine.Data.DataAccess
 {
     public class DrinksContext : DbContext
     {
-        public DrinksContext(DbContextOptions options) : base(options) 
+        public DrinksContext(DbContextOptions<DrinksContext> options) : base(options) 
         { 
         }
 
