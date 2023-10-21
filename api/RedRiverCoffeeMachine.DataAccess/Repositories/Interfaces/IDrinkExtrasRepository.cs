@@ -4,6 +4,6 @@ namespace RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces
 {
     public interface IDrinkExtrasRepository
     {
-        public Task<DrinkExtra> AddDrinkExtraAsync(DrinkExtra drinkExtra);
+        public Task<Extra> AddDrinkExtraAsync(Extra drinkExtra);
     }
 }

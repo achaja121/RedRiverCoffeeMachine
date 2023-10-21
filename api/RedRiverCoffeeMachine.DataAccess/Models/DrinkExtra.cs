@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RedRiverCoffeeMachine.Data.Models;
 
-namespace RedRiverCoffeeMachine.Data.Models
+namespace RedRiverCoffeeMachine.DataAccess.Models
 {
     public class DrinkExtra
     {
-        public int Id { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public string Name { get; set; }
+        public int DrinkId { get; set; }
+        public int ExtraId { get; set; }
+        public Drink Drink { get; set; }
+        public Extra Extra { get; set; }
     }
 }
