@@ -4,19 +4,18 @@ using RedRiverCoffeeMachine.Data.Enums;
 using RedRiverCoffeeMachine.Data.Models;
 using RedRiverCoffeeMachine.DataAccess.Models;
 using RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces;
-using System.Collections.Generic;
 
 namespace RedRiverCoffeeMachine.Api.Services
 {
     public class RecipeStepsService : IRecipeStepsService
     {
+        private const string DrinkExtrasToken = "{drinkExtras}";
+        private const string DrinkTypeToken = "{drinkType}";
+
         private readonly IDrinkExtrasRepository _drinkExtrasRepository;
         private readonly IDrinksRepository _drinksRepository;
         private readonly ILogger<RecipeStepsService> _logger;
         private readonly IRecipeStepsRepository _recipeStepsRepository;
-
-        private const string DrinkExtrasToken = "{drinkExtras}";
-        private const string DrinkTypeToken = "{drinkType}";
 
         public RecipeStepsService(
             IDrinkExtrasRepository drinkExtrasRepository,
@@ -43,23 +42,21 @@ namespace RedRiverCoffeeMachine.Api.Services
 
         private async Task<List<string>> GetRecipeStepsAsync(int[] selectedExtreIds, string stepIds, DrinkTypes drinkType, int drinkId)
         {
-            var recipeStepsList = new List<string>();
-
             if(string.IsNullOrEmpty(stepIds))
             {
-                _logger.LogWarning("");
+                _logger.LogWarning($"Drink does not have steps, drink id: {drinkId}");
 
                 return new List<string>();
             }
 
             var stepIdList = GetStepIds(stepIds);
-            var steps = (await _recipeStepsRepository.GetRecipeStepsByIdAsync(stepIdList))?.ToList();
+            var steps = await _recipeStepsRepository.GetRecipeStepsByIdAsync(stepIdList);
             var drinkExtras =  await _drinkExtrasRepository.GetDrinkExtrasByExtraIdAsync(drinkId, selectedExtreIds);
 
             return GetFormattedSteps(stepIdList, steps, drinkExtras, drinkType);
         }
 
-        private List<string> GetFormattedSteps(List<int> stepIds, List<RecipeStep> recipeSteps, IEnumerable<DrinkExtra> drinkExtras, DrinkTypes drinkType)
+        private List<string> GetFormattedSteps(List<int> stepIds, IEnumerable<RecipeStep> recipeSteps, IEnumerable<DrinkExtra> drinkExtras, DrinkTypes drinkType)
         {
             var formattedSteps = new List<string>();
 

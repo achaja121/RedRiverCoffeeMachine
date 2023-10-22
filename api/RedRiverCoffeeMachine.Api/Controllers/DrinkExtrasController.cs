@@ -5,23 +5,30 @@ using RedRiverCoffeeMachine.Api.Services.Interfaces;
 namespace RedRiverCoffeeMachine.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class DrinkExtrasController : ControllerBase
     {
         private readonly IDrinkExtrasService _drinkExtrasService;
-        private readonly ILogger<DrinksController> _logger;
 
         public DrinkExtrasController(
-            IDrinkExtrasService drinkExtrasService,
-            ILogger<DrinksController> logger)
+            IDrinkExtrasService drinkExtrasService)
         {
             _drinkExtrasService = drinkExtrasService;
-            _logger = logger;
         }
 
         [HttpPost("addExtras")]
         public async Task<IActionResult> AddDrinkExtrasAsync(AddExtrasRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                return BadRequest("Name cannot be whitespace");
+            }
+
+            if (!request.DrinksId.Any())
+            {
+                return BadRequest("At least one drink id must be provided");
+            }
+
             return await _drinkExtrasService.AddDrinkExtraAsync(request) ? 
                 Ok() : StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -29,6 +36,11 @@ namespace RedRiverCoffeeMachine.Api.Controllers
         [HttpGet("getExtras")]
         public async Task<IActionResult> GetDrinkExtras(int drinkId)
         {
+            if(drinkId < 0)
+            {
+                return BadRequest("Drink id is required");
+            }
+
             return Ok(await _drinkExtrasService.GetDrinkExtrasAsync(drinkId));
         }
     }
