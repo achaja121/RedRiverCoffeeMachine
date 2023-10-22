@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RedRiverCoffeeMachine.Api.Constants;
 using RedRiverCoffeeMachine.Api.Services.Interfaces;
 
 namespace RedRiverCoffeeMachine.Api.Controllers
@@ -16,12 +17,12 @@ namespace RedRiverCoffeeMachine.Api.Controllers
             _recipeStepsService = recipeStepsService;
         }
 
-        [HttpGet("getSteps")]
+        [HttpGet(ApiEndpoints.GetRecipeSteps)]
         public async Task<IActionResult> GetRecipeStepsAsync([FromQuery(Name = ExtrasQuery)] int[] extraIds, int drinkId)
         {
-            if (drinkId < 0)
+            if (drinkId <= 0)
             {
-                return BadRequest("Drink id is required");
+                return BadRequest(ApiMessages.DrinkIdRequired);
             }
 
             return Ok(await _recipeStepsService.GetRecipeStepsAsync(extraIds, drinkId));
