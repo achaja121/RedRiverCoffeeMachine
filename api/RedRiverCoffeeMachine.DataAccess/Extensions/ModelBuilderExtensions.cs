@@ -2,11 +2,6 @@
 using RedRiverCoffeeMachine.Data.Enums;
 using RedRiverCoffeeMachine.Data.Models;
 using RedRiverCoffeeMachine.DataAccess.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RedRiverCoffeeMachine.DataAccess.Extensions
 {

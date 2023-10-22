@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using RedRiverCoffeeMachine.Data.DataAccess;
+﻿using RedRiverCoffeeMachine.Data.DataAccess;
 using RedRiverCoffeeMachine.Data.Models;
 using RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces;
 
