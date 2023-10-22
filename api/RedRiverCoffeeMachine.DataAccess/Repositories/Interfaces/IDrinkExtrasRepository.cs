@@ -1,9 +1,10 @@
 ﻿using RedRiverCoffeeMachine.Data.Models;
+using RedRiverCoffeeMachine.DataAccess.Models;
 
 namespace RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces
 {
-    public interface IDrinkExtrasRepository
+    public interface IDrinkExtrasRepository : IRepositoryBase<DrinkExtra>
     {
-        public Task<Extra> AddDrinkExtraAsync(Extra drinkExtra);
+        Task<IEnumerable<DrinkExtra>> GetDrinkExtrasByDrinkIdAsync(int drinkId);
     }
 }

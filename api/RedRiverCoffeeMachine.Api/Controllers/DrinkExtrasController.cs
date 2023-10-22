@@ -19,6 +19,12 @@ namespace RedRiverCoffeeMachine.Api.Controllers
             _logger = logger;
         }
 
+        [HttpGet("getExtras")]        
+        public async Task<IActionResult> GetDrinkExtras(int drinkId)
+        {
+            return Ok(await _drinkExtrasService.GetDrinkExtrasAsync(drinkId));
+        }
+
         [HttpPost("addExtras")]
         public async Task<IActionResult> AddDrinkExtrasAsync(AddExtrasRequest request)
         {

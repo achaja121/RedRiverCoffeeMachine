@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RedRiverCoffeeMachine.Api.Configuration;
 using RedRiverCoffeeMachine.Data.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,10 +11,7 @@ builder.Services.AddDbContext<DrinksContext>(options =>
         builder.Configuration.GetConnectionString("Default"));
 });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.RegisterServices();
 
 var app = builder.Build();
 
