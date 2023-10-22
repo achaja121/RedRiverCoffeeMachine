@@ -1,8 +1,5 @@
-﻿using RedRiverCoffeeMachine.Api.Controllers;
-using RedRiverCoffeeMachine.Api.Models.Responses;
+﻿using RedRiverCoffeeMachine.Api.Models.Responses;
 using RedRiverCoffeeMachine.Api.Services.Interfaces;
-using RedRiverCoffeeMachine.Data.Models;
-using RedRiverCoffeeMachine.DataAccess.Models;
 using RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces;
 
 namespace RedRiverCoffeeMachine.Api.Services
@@ -22,7 +19,7 @@ namespace RedRiverCoffeeMachine.Api.Services
 
         public async Task<IEnumerable<DrinkResponse>> GetAllDrinksAsync()
         {
-            var drinks = await _drinksRepositry.GetAllDrinksAsync();
+            var drinks = await _drinksRepositry.GetAllAsync();
 
             return drinks.Select(drink => new DrinkResponse
             {
