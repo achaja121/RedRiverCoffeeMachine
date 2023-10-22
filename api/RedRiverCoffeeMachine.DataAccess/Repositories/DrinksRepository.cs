@@ -1,33 +1,39 @@
-﻿using RedRiverCoffeeMachine.Data.Models;
+﻿using Azure.Core;
+using RedRiverCoffeeMachine.Data.DataAccess;
+using RedRiverCoffeeMachine.Data.Models;
 using RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces;
 
 namespace RedRiverCoffeeMachine.DataAccess.Repositories
 {
-    public class DrinksRepository : IDrinksRepository
+    public class DrinksRepository : RepositoryBase<Drink>, IDrinksRepository
     {
-        public Task<IEnumerable<Drink>> GetAllDrinksAsync()
+        public DrinksRepository(DrinksContext context) : base(context) 
         {
-            throw new NotImplementedException();
         }
 
-        public Task<Drink> GetDrinkByIdAsync(int id)
+        public async Task<IEnumerable<Drink>> GetAllDrinksAsync()
         {
-            throw new NotImplementedException();
+            return await GetAllAsync();
         }
 
-        public Task<IEnumerable<Drink>> GetDrinksByIdAsync(IEnumerable<int> ids)
+        public async Task<Drink> GetDrinkByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<bool> UpdateDrinkAsync(Drink drink)
+        public async Task<IEnumerable<Drink>> GetDrinksByIdAsync(IEnumerable<int> ids)
         {
-            throw new NotImplementedException();
+            return await FindByConditionAsync(x => ids.Any(id => id == x.Id));
         }
 
-        public Task<bool> UpdateDrinksAsync(IEnumerable<Drink> drinks)
+        public async Task<bool> UpdateDrinkAsync(Drink drink)
         {
-            throw new NotImplementedException();
+            return await UpdateAsync(drink);
+        }
+
+        public async Task<bool> UpdateDrinksAsync(IEnumerable<Drink> drinks)
+        {
+            return await UpdateRangeAsync(drinks);
         }
     }
 }

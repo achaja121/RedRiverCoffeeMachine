@@ -1,5 +1,6 @@
 ﻿using RedRiverCoffeeMachine.Api.Models.Responses;
 using RedRiverCoffeeMachine.Api.Services.Interfaces;
+using RedRiverCoffeeMachine.Data.Enums;
 using RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces;
 
 namespace RedRiverCoffeeMachine.Api.Services
@@ -9,6 +10,9 @@ namespace RedRiverCoffeeMachine.Api.Services
         private readonly IDrinksRepository _drinksRepository;
         private readonly ILogger<RecipeStepsService> _logger;
         private readonly IRecipeStepsRepository _recipeStepsRepository;
+
+        private const string DrinkExtrasToken = "{drinkExtras}";
+        private const string DrinkTypeToken = "{drinkType}";
 
         public RecipeStepsService(
             IDrinksRepository drinksRepository,
@@ -20,18 +24,18 @@ namespace RedRiverCoffeeMachine.Api.Services
             _recipeStepsRepository = recipeStepsRepository;
         }
 
-        public async Task<RecipeStepsResponse> GetRecipeStepsAsync(int drinkId)
+        public async Task<RecipeStepsResponse> GetRecipeStepsAsync(int[] extraIds, int drinkId)
         {
             var drink = await _drinksRepository.GetDrinkByIdAsync(drinkId);
 
             return new RecipeStepsResponse
             {
                 DrinkName = drink.Name,
-                RecipeSteps = await GetRecipeStepsAsync(drink.RecipeStepsOrder),
+                RecipeSteps = await GetRecipeStepsAsync(drink.RecipeStepsOrder, drink.Type),
             };
         }
 
-        private async Task<List<string>> GetRecipeStepsAsync(string stepIds)
+        private async Task<List<string>> GetRecipeStepsAsync(string stepIds, DrinkTypes drinkType)
         {
             var recipeStepsList = new List<string>();
 
@@ -39,19 +43,28 @@ namespace RedRiverCoffeeMachine.Api.Services
             {
                 _logger.LogWarning("");
 
-                return recipeStepsList;
+                return new List<string>();
             }
 
             var stepIdList = GetStepIds(stepIds);
-            var steps = await _recipeStepsRepository.GetRecipeStepsAsync(stepIdList);
+            var steps = (await _recipeStepsRepository.GetRecipeStepsByIdAsync(stepIdList))?.ToList();
 
-            foreach ( var stepId in stepIdList)
+            foreach (var stepId in stepIdList)
             {
                 var step = steps.FirstOrDefault(x => x.Id == stepId);
+                var stepName = step.StepName;
                 
-                if (step == null)
+                if (step == null || string.IsNullOrEmpty(stepName))
                 {
                     _logger.LogWarning("");
+                    continue;
+                }
+
+                if (stepName.Contains(DrinkTypeToken))
+                {
+                    var formatedStep = stepName.Replace(DrinkTypeToken, drinkType.ToString());
+                    recipeStepsList.Add(formatedStep);
+
                     continue;
                 }
 

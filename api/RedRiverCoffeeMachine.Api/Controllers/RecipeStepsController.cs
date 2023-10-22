@@ -17,9 +17,9 @@ namespace RedRiverCoffeeMachine.Api.Controllers
         }
 
         [HttpGet("getSteps")]
-        public async Task<IActionResult> GetRecipeStepsAsync(int drinkId)
+        public async Task<IActionResult> GetRecipeStepsAsync([FromQuery(Name = "extraIds")] int[] extraIds, int drinkId)
         {
-            return Ok(await _recipeStepsService.GetRecipeStepsAsync(drinkId));
+            return Ok(await _recipeStepsService.GetRecipeStepsAsync(extraIds, drinkId));
         }
     }
 }

@@ -2,8 +2,8 @@
 
 namespace RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces
 {
-    public interface IRecipeStepsRepository
+    public interface IRecipeStepsRepository : IRepositoryBase<RecipeStep>
     {
-        Task<IEnumerable<RecipeStep>> GetRecipeStepsAsync(IEnumerable<int> stepIds);
+        Task<IEnumerable<RecipeStep>> GetRecipeStepsByIdAsync(IEnumerable<int> stepIds);
     }
 }

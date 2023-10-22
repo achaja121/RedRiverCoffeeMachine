@@ -8,6 +8,5 @@ namespace RedRiverCoffeeMachine.Api.Models.Responses
         public int Id { get; set; }
         public string Name { get; set; }
         public DrinkTypes Type { get; set; }
-        public IEnumerable<Extra> PossibleExtras { get; set; }
     }
 }
