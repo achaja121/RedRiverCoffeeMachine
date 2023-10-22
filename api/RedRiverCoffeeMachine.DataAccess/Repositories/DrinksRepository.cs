@@ -11,11 +11,6 @@ namespace RedRiverCoffeeMachine.DataAccess.Repositories
         {
         }
 
-        public async Task<IEnumerable<Drink>> GetAllDrinksAsync()
-        {
-            return await GetAllAsync();
-        }
-
         public async Task<Drink> GetDrinkByIdAsync(int id)
         {
             return await FirstOrDefaultAsync(x => x.Id == id);
@@ -24,16 +19,6 @@ namespace RedRiverCoffeeMachine.DataAccess.Repositories
         public async Task<IEnumerable<Drink>> GetDrinksByIdAsync(IEnumerable<int> ids)
         {
             return await FindByConditionAsync(x => ids.Any(id => id == x.Id));
-        }
-
-        public async Task<bool> UpdateDrinkAsync(Drink drink)
-        {
-            return await UpdateAsync(drink);
-        }
-
-        public async Task<bool> UpdateDrinksAsync(IEnumerable<Drink> drinks)
-        {
-            return await UpdateRangeAsync(drinks);
         }
     }
 }

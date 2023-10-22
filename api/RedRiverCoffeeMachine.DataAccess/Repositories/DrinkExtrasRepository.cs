@@ -17,9 +17,15 @@ namespace RedRiverCoffeeMachine.DataAccess.Repositories
         public async Task<IEnumerable<DrinkExtra>> GetDrinkExtrasByDrinkIdAsync(int drinkId)
         {
             return await _context.Set<DrinkExtra>()
-                .Include(eOne => eOne.Drink)
-                .Include(eTwo => eTwo.Extra)
+                .Include(eOne => eOne.Extra)
                 .Where(x => x.DrinkId == drinkId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<DrinkExtra>> GetDrinkExtrasByExtraIdAsync(int drinkId, int[] extraIds)
+        {
+            return await _context.Set<DrinkExtra>()
+                .Include(eOne => eOne.Extra)
+                .Where(x => x.DrinkId == drinkId && extraIds.Any(id => x.ExtraId == id)).ToListAsync();
         }
     }
 }
