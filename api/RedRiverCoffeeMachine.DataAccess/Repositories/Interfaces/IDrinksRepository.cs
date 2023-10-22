@@ -2,7 +2,7 @@
 
 namespace RedRiverCoffeeMachine.DataAccess.Repositories.Interfaces
 {
-    public interface IDrinksRepository
+    public interface IDrinksRepository : IRepositoryBase<Drink>
     {
         Task<IEnumerable<Drink>> GetAllDrinksAsync();
 
