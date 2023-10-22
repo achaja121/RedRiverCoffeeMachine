@@ -12,6 +12,8 @@ namespace RedRiverCoffeeMachine.Api.Services
         private const string DrinkExtrasToken = "{drinkExtras}";
         private const string DrinkTypeToken = "{drinkType}";
 
+        private static readonly char _separator = ',';
+
         private readonly IDrinkExtrasRepository _drinkExtrasRepository;
         private readonly IDrinksRepository _drinksRepository;
         private readonly ILogger<RecipeStepsService> _logger;
@@ -33,11 +35,28 @@ namespace RedRiverCoffeeMachine.Api.Services
         {
             var drink = await _drinksRepository.GetDrinkByIdAsync(drinkId);
 
+            if(drink == null)
+            {
+                _logger.LogError($"{nameof(GetRecipeStepsAsync)}: Failed to get drink, drink id: {drinkId}");
+                return new RecipeStepsResponse();
+            }
+
             return new RecipeStepsResponse
             {
                 DrinkName = drink.Name,
                 RecipeSteps = await GetRecipeStepsAsync(selectedExtreIds, drink.RecipeStepsOrder, drink.Type, drinkId),
             };
+        }
+
+        private string FormatStepWithDrinkExtras(string step, IEnumerable<DrinkExtra> drinkExtras)
+        {
+            var extraNames = drinkExtras.Select(x => x.Extra.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray() ?? Array.Empty<string>();
+
+            string formattedExtras = extraNames.Count() > 1
+                ? string.Join(", ", extraNames.Take(extraNames.Count() - 1)) + " and " + extraNames.Last()
+                : extraNames.FirstOrDefault();
+
+            return step.Replace(DrinkExtrasToken, formattedExtras);
         }
 
         private async Task<List<string>> GetRecipeStepsAsync(int[] selectedExtreIds, string stepIds, DrinkTypes drinkType, int drinkId)
@@ -67,7 +86,6 @@ namespace RedRiverCoffeeMachine.Api.Services
 
                 if (step == null || string.IsNullOrEmpty(stepName))
                 {
-                    _logger.LogWarning("");
                     continue;
                 }
 
@@ -97,28 +115,27 @@ namespace RedRiverCoffeeMachine.Api.Services
             return formattedSteps;
         }
 
-        private string FormatStepWithDrinkExtras(string step, IEnumerable<DrinkExtra> drinkExtras)
-        {
-            var extraNames = drinkExtras.Select(x => x.Extra.Name).Where(e => !string.IsNullOrEmpty(e)).ToArray() ?? Array.Empty<string>();
-
-            string formattedExtras = extraNames.Count() > 1
-                ? string.Join(", ", extraNames.Take(extraNames.Count() - 1)) + " and " + extraNames.Last() 
-                : extraNames.FirstOrDefault();
-            
-            return step.Replace(DrinkExtrasToken, formattedExtras);
-        }
-        private static List<int> GetStepIds(string stepIdsString)
+        private List<int> GetStepIds(string stepIdsString)
         {
             var stepIds = new List<int>();
             if (string.IsNullOrEmpty(stepIdsString))
             {
                 return stepIds;
             }
-            var idsStringArray = stepIdsString.Split(',');
+
+            var idsStringArray = stepIdsString.Split(_separator);
 
             foreach( var id in idsStringArray)
             {
-                stepIds.Add(int.Parse(id));
+                var isSuccess = int.TryParse(id, out int parsedId);
+
+                if (!isSuccess)
+                {
+                    _logger.LogInformation($"{nameof(GetStepIds)}: Could not parse following string: {id}");
+                    continue;
+                }
+
+                stepIds.Add(parsedId);
             }
 
             return stepIds;

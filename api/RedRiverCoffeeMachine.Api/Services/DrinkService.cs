@@ -21,6 +21,13 @@ namespace RedRiverCoffeeMachine.Api.Services
         {
             var drinks = await _drinksRepositry.GetAllAsync();
 
+            if (drinks == null || !drinks.Any())
+            {
+                _logger.LogInformation($"{nameof(GetAllDrinksAsync)}: Failed to get drinks");
+
+                return Enumerable.Empty<DrinkResponse>();
+            }
+
             return drinks.Select(drink => new DrinkResponse
             {
                 Id= drink.Id,
@@ -31,6 +38,11 @@ namespace RedRiverCoffeeMachine.Api.Services
         public async Task<DrinkDetailsResponse> GetDrinkByIdAsync(int id)
         {
             var drink = await _drinksRepositry.GetDrinkByIdAsync(id);
+
+            if(drink == null)
+            {
+                return null;
+            }
 
             return new DrinkDetailsResponse
             {
