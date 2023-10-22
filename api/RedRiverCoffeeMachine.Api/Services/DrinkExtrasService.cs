@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using RedRiverCoffeeMachine.Api.Models.Requests;
+﻿using RedRiverCoffeeMachine.Api.Models.Requests;
 using RedRiverCoffeeMachine.Api.Models.Responses;
 using RedRiverCoffeeMachine.Api.Services.Interfaces;
 using RedRiverCoffeeMachine.Data.Models;
@@ -13,15 +12,18 @@ namespace RedRiverCoffeeMachine.Api.Services
         private readonly IExtraRepository _extraRepository;
         private readonly IDrinkExtrasRepository _drinkExtrasRepository;
         private readonly IDrinksRepository _drinksRepository;
+        private readonly ILogger<DrinkExtrasService> _logger;
 
         public DrinkExtrasService(
             IExtraRepository extraRepository,
             IDrinkExtrasRepository drinkExtrasRepository, 
-            IDrinksRepository drinksRepository) 
+            IDrinksRepository drinksRepository,
+            ILogger<DrinkExtrasService> logger) 
         {
             _extraRepository = extraRepository;
             _drinkExtrasRepository = drinkExtrasRepository;
             _drinksRepository= drinksRepository;
+            _logger = logger;
         }
         
         public async Task<bool> AddDrinkExtraAsync(AddExtrasRequest request)
@@ -35,10 +37,17 @@ namespace RedRiverCoffeeMachine.Api.Services
 
             if(updatedExtra == null)
             {
+                _logger.LogError($"Failed to update extra, name: {request.Name}");
                 return false;
             }
 
             var drinks = await _drinksRepository.GetDrinksByIdAsync(request.DrinksId);
+
+            if(drinks == null || !drinks.Any())
+            {
+                _logger.LogError($"Failed get drink with id: {request.DrinksId}");
+                return false;
+            }
 
             var drinkExtras = drinks.Select(drink => new DrinkExtra
             {

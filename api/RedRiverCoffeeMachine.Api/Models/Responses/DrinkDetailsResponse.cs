@@ -1,5 +1,4 @@
 ﻿using RedRiverCoffeeMachine.Data.Enums;
-using RedRiverCoffeeMachine.Data.Models;
 
 namespace RedRiverCoffeeMachine.Api.Models.Responses
 {

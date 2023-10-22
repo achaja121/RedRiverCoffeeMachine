@@ -4,18 +4,15 @@ using RedRiverCoffeeMachine.Api.Services.Interfaces;
 namespace RedRiverCoffeeMachine.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class DrinksController : ControllerBase
     {
         private readonly IDrinkService _drinkService;
-        private readonly ILogger<DrinksController> _logger;
 
         public DrinksController(
-            IDrinkService drinkService,
-            ILogger<DrinksController> logger)
+            IDrinkService drinkService)
         {
             _drinkService = drinkService;
-            _logger = logger;
         }
 
         [HttpGet("getAll")]
@@ -25,9 +22,14 @@ namespace RedRiverCoffeeMachine.Api.Controllers
         }
 
         [HttpGet("drinkDetails")]
-        public async Task<IActionResult> GetDrinkDetailsAsync(int Id)
+        public async Task<IActionResult> GetDrinkDetailsAsync(int id)
         {
-            return Ok(await _drinkService.GetDrinkByIdAsync(Id));
+            if (id < 0)
+            {
+                return BadRequest("Drink id is required");
+            }
+
+            return Ok(await _drinkService.GetDrinkByIdAsync(id));
         }
     }
 }
