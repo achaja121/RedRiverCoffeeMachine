@@ -10,40 +10,43 @@ namespace RedRiverCoffeeMachine.Api.Services
 {
     public class DrinkExtrasService : IDrinkExtrasService
     {
+        private readonly IExtraRepository _extraRepository;
         private readonly IDrinkExtrasRepository _drinkExtrasRepository;
         private readonly IDrinksRepository _drinksRepository;
 
         public DrinkExtrasService(
+            IExtraRepository extraRepository,
             IDrinkExtrasRepository drinkExtrasRepository, 
             IDrinksRepository drinksRepository) 
         {
+            _extraRepository = extraRepository;
             _drinkExtrasRepository = drinkExtrasRepository;
             _drinksRepository= drinksRepository;
         }
         
         public async Task<bool> AddDrinkExtraAsync(AddExtrasRequest request)
         {
-            var drinkExtra = new Extra
+            var extra = new Extra
             {
                 Name = request.Name,
             };
 
-            var updatedDrinkExtra = "";//await _drinkExtrasRepository.AddDrinkExtraAsync(drinkExtra);
+            var updatedExtra = await _extraRepository.AddExtraAsync(extra);
 
-            if(updatedDrinkExtra == null)
+            if(updatedExtra == null)
             {
                 return false;
             }
 
             var drinks = await _drinksRepository.GetDrinksByIdAsync(request.DrinksId);
 
-            foreach(var drink in drinks)
+            var drinkExtras = drinks.Select(drink => new DrinkExtra
             {
-                //TODO rethink the way extras are updated
-                //drink.DrinkExtras.Add(drinkExtra);
-            }
-
-            return await _drinksRepository.UpdateDrinksAsync(drinks);
+                ExtraId = updatedExtra.Id,
+                DrinkId = drink.Id,
+            });
+            
+            return await _drinkExtrasRepository.AddRangeAsync(drinkExtras);
         }
 
         public async Task<DrinkExtraResponse> GetDrinkExtrasAsync(int drinkId)

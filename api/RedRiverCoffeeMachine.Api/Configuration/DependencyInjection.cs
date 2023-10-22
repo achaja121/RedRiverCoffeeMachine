@@ -13,6 +13,7 @@ namespace RedRiverCoffeeMachine.Api.Configuration
             services.AddScoped<IDrinksRepository, DrinksRepository>();
             services.AddScoped<IRecipeStepsRepository, RecipeStepsRepository>();
             services.AddScoped<IDrinkExtrasRepository, DrinkExtrasRepository>();
+            services.AddTransient<IExtraRepository, ExtraRepository>();
 
             services.AddScoped<IDrinkService, DrinkService>();
             services.AddScoped<IDrinkExtrasService, DrinkExtrasService>();
